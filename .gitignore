@@ -22,3 +22,5 @@ coverage.xml
 .hypothesis
 *.joblib
 properties_data.csv
+data/
+models/

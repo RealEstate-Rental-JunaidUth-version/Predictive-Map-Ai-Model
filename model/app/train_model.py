@@ -15,6 +15,9 @@ def train():
         return
 
     print("Loading data...")
+    # Ensure output directories exist
+    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
+    os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
     raw_df = pd.read_csv(DATA_FILE)
     raw_df['Date'] = pd.to_datetime(raw_df['Date'])
 
@@ -34,7 +37,7 @@ def train():
     monthly_data = monthly_df[monthly_df['propertyType'] == 'MONTHLY']
     monthly_df_agg = monthly_data.groupby(['neighberhood', pd.Grouper(key='Date', freq='ME')])['rentPerMonth'].mean().reset_index()
     pivot_df = monthly_df_agg.pivot(index='neighberhood', columns='Date', values='rentPerMonth')
-    pivot_df = pivot_df.interpolate(axis=1).fillna(method='bfill', axis=1).fillna(method='ffill', axis=1)
+    pivot_df = pivot_df.interpolate(axis=1).bfill(axis=1).ffill(axis=1)
     growth_matrix = pivot_df.div(pivot_df.iloc[:, 0], axis=0)
     np.save(os.path.join(os.path.dirname(__file__), "../data/property_feature_matrix.npy"), growth_matrix.values)
     n_clusters = min(3, len(pivot_df))
@@ -51,7 +54,7 @@ def process_dataset(df):
     monthly_df = df.groupby(['neighberhood', pd.Grouper(key='Date', freq='ME')])['rentPerMonth'].mean().reset_index()
     coords = df.groupby('neighberhood')[['latitude', 'longitude']].mean()
     pivot_df = monthly_df.pivot(index='neighberhood', columns='Date', values='rentPerMonth')
-    pivot_df = pivot_df.interpolate(axis=1).fillna(method='bfill', axis=1).fillna(method='ffill', axis=1)
+    pivot_df = pivot_df.interpolate(axis=1).bfill(axis=1).ffill(axis=1)
     # 2. Normalize by Growth (Start = 1.0)
     growth_matrix = pivot_df.div(pivot_df.iloc[:, 0], axis=0)
     # 3. Clustering
