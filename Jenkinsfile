@@ -1,6 +1,6 @@
 @Library('my-shared-library') _
 
-mlModelPipeline(
+pythonPipeline(
     appName: 'predictive-heatmaps-of-neighborhood-price-evolution',
     hfRepo: 'JunaidUTH/Reel-Estate-predictive-map',
     modelFiles: [
