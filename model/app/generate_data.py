@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 from datetime import datetime, timedelta
 
 # Configuration
@@ -138,5 +139,8 @@ for neigh in neighborhoods:
             })
 
 df = pd.DataFrame(data)
-df.to_csv("model/data/properties_data.csv", index=False)
-print("Success! model/data/properties_data.csv created with Moroccan market trends.")
+# Save relative to script directory
+output_path = os.path.join(os.path.dirname(__file__), "../data/properties_data.csv")
+os.makedirs(os.path.dirname(output_path), exist_ok=True)
+df.to_csv(output_path, index=False)
+print(f"Success! {output_path} created with Moroccan market trends.")

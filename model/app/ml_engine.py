@@ -51,7 +51,7 @@ class MarketTrendEngine:
         pivot_df = monthly_df.pivot(index='neighberhood', columns='Date', values='rentPerMonth')
         
         # Interpolation for missing months
-        pivot_df = pivot_df.interpolate(axis=1).fillna(method='bfill', axis=1).fillna(method='ffill', axis=1)
+        pivot_df = pivot_df.interpolate(axis=1).bfill(axis=1).ffill(axis=1)
         
         # Fallback if insufficient data
         if pivot_df.shape[1] < 2 or len(pivot_df) < 2: 
